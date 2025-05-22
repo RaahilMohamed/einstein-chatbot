@@ -1,0 +1,23 @@
+import streamlit as st
+import openai
+
+st.set_page_config(page_title="Talk to Einstein", page_icon="🧠")
+
+st.title("Talk to Einstein 🧠")
+st.subheader("Ask the genius anything!")
+
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+
+def ask_einstein(question):
+    prompt = f"You are Albert Einstein. Respond as he would to the question:\nQ: {question}\nA:"
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
+
+user_input = st.text_input("Ask Einstein anything:")
+if user_input:
+    with st.spinner("Thinking like Einstein..."):
+        answer = ask_einstein(user_input)
+        st.success(answer)
